@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight, Code, Palette, Megaphone, GraduationCap, Home, Info, Briefcase, BookOpen, Phone, Calendar } from 'lucide-react';
 import {
     Sheet,
     SheetContent,
@@ -18,13 +18,22 @@ export default function Navbar() {
     const [open, setOpen] = useState(false)
 
     const menuItems = [
-        { name: "Accueil", href: "/" },
-        { name: "Marketing digital", href: "/marketing-digital" },
-        { name: "Développement web", href: "/developpement-web" },
-        { name: "Design", href: "/design" },
-        { name: "Training", href: "/training" },
-        { name: "Blog", href: "/blog" },
-        { name: "Contact", href: "/contact" },
+        { name: "Accueil", href: "/", icon: <Home className="w-5 h-5" /> },
+        { name: "À propos", href: "/about", icon: <Info className="w-5 h-5" /> },
+        {
+            name: "Nos services",
+            href: "#",
+            icon: <Briefcase className="w-5 h-5" />,
+            submenu: [
+                { name: "Développement web", href: "/services/development", icon: <Code className="w-5 h-5" /> },
+                { name: "Marketing digital", href: "/services/marketing", icon: <Megaphone className="w-5 h-5" /> },
+                { name: "Design", href: "/services/design", icon: <Palette className="w-5 h-5" /> },
+                { name: "Training", href: "/services/training", icon: <GraduationCap className="w-5 h-5" /> },
+            ]
+        },
+        { name: "Réalisations", href: "/portfolio", icon: <Briefcase className="w-5 h-5" /> },
+        { name: "Blog", href: "/blog", icon: <BookOpen className="w-5 h-5" /> },
+        { name: "Contact", href: "/contact", icon: <Phone className="w-5 h-5" /> },
     ]
 
     return (
@@ -37,38 +46,77 @@ export default function Navbar() {
             </div>
 
             {/* Barre de navigation */}
-            <div className="bg-white p-2 px-4 md:px-10">
+            <div className="bg-white p-2 px-4 md:px-10 sticky top-0 z-50 shadow-sm">
                 <nav className="flex justify-between items-center">
                     {/* Logo */}
-                    <div className="text-xl font-bold text-[#1D1046]">
+                    <Link href="/" className="text-xl font-bold text-[#1D1046]">
                         <Image src="/images/logo.png" alt="Think Trend Logo" width={150} height={150} />
-                    </div>
+                    </Link>
 
                     {/* Menu - Desktop */}
-                    <ul className="hidden md:flex gap-4 lg:gap-10">
+                    <ul className="hidden md:flex gap-4 lg:gap-10 items-center">
                         {menuItems.map((item) => (
-                            <li key={item.name} className="hover:text-[#1D1046] cursor-pointer">
-                                <Link href={item.href}>{item.name}</Link>
+                            <li key={item.name} className="relative group">
+                                {item.submenu ? (
+                                    <div className="cursor-pointer flex items-center gap-1 hover:text-[#1D1046]">
+                                        <span className="flex items-center gap-1">
+                                            {item.icon}
+                                            {item.name}
+                                        </span>
+                                        <ChevronRight className="w-4 h-4 transform group-hover:rotate-90 transition-transform" />
+                                        <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                                            {item.submenu.map((subItem) => (
+                                                <Link
+                                                    key={subItem.name}
+                                                    href={subItem.href}
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-gray-700 hover:text-[#1D1046]"
+                                                >
+                                                    {subItem.icon}
+                                                    {subItem.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <Link 
+                                        href={item.href} 
+                                        className="flex items-center gap-1 hover:text-[#1D1046] transition-colors"
+                                    >
+                                        {item.icon}
+                                        {item.name}
+                                    </Link>
+                                )}
                             </li>
                         ))}
                     </ul>
 
-                    {/* Bouton - Desktop */}
-                    <div className="hidden md:block">
-                        <Button className="text-white bg-[#1D1046] hover:bg-[#2d1a69] px-4 py-2 rounded-[20px]">
-                            Obtenir un devis
-                        </Button>
+                    {/* Boutons - Desktop */}
+                    <div className="hidden md:flex gap-4">
+                        <Link href="/consultation">
+                            <Button className="text-white bg-[#1D1046] hover:bg-[#2d1a69] px-4 py-2 rounded-[20px] flex items-center gap-2">
+                                <Calendar className="w-5 h-5" />
+                                Consultation gratuite
+                            </Button>
+                        </Link>
+                        <Link href="/contact">
+                            <Button variant="outline" className="px-4 py-2 rounded-[20px] border-[#1D1046] text-[#1D1046] hover:bg-[#1D1046] hover:text-white">
+                                Obtenir un devis
+                            </Button>
+                        </Link>
                     </div>
 
                     {/* Mobile Menu */}
                     <div className="md:hidden flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-white bg-[#1D1046] hover:bg-[#2d1a69] px-3 py-1 rounded-[20px] text-xs"
-                        >
-                            Obtenir un devis
-                        </Button>
+                        <Link href="/consultation">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-white bg-[#1D1046] hover:bg-[#2d1a69] px-3 py-1 rounded-[20px] text-xs flex items-center gap-1"
+                            >
+                                <Calendar className="w-4 h-4" />
+                                Consultation
+                            </Button>
+                        </Link>
 
                         <Sheet open={open} onOpenChange={setOpen}>
                             <SheetTrigger asChild>
@@ -92,30 +140,60 @@ export default function Navbar() {
                                 <div className="py-6">
                                     <nav className="flex flex-col">
                                         {menuItems.map((item) => (
-                                            <SheetClose asChild key={item.name}>
-                                                <Link
-                                                    href={item.href}
-                                                    className="flex items-center justify-between py-3 px-6 hover:bg-gray-50 border-b border-gray-100 group"
-                                                >
-                                                    <span className="text-lg font-medium text-gray-800 group-hover:text-[#1D1046] transition-colors">
-                                                        {item.name}
-                                                    </span>
-                                                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#1D1046] transition-transform group-hover:translate-x-1" />
-                                                </Link>
-                                            </SheetClose>
+                                            <div key={item.name}>
+                                                {item.submenu ? (
+                                                    <>
+                                                        <div className="flex items-center justify-between py-3 px-6 border-b border-gray-100">
+                                                            <span className="text-lg font-medium text-gray-800 flex items-center gap-2">
+                                                                {item.icon}
+                                                                {item.name}
+                                                            </span>
+                                                            <ChevronRight className="h-4 w-4 text-gray-400" />
+                                                        </div>
+                                                        <div className="bg-gray-50">
+                                                            {item.submenu.map((subItem) => (
+                                                                <SheetClose asChild key={subItem.name}>
+                                                                    <Link
+                                                                        href={subItem.href}
+                                                                        className="flex items-center gap-2 py-2 px-8 hover:bg-gray-100 text-gray-700"
+                                                                    >
+                                                                        {subItem.icon}
+                                                                        {subItem.name}
+                                                                    </Link>
+                                                                </SheetClose>
+                                                            ))}
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <SheetClose asChild>
+                                                        <Link
+                                                            href={item.href}
+                                                            className="flex items-center gap-2 py-3 px-6 hover:bg-gray-50 border-b border-gray-100 group"
+                                                        >
+                                                            {item.icon}
+                                                            <span className="text-lg font-medium text-gray-800 group-hover:text-[#1D1046] transition-colors">
+                                                                {item.name}
+                                                            </span>
+                                                            <ChevronRight className="h-4 w-4 text-gray-400 ml-auto group-hover:text-[#1D1046] transition-transform group-hover:translate-x-1" />
+                                                        </Link>
+                                                    </SheetClose>
+                                                )}
+                                            </div>
                                         ))}
                                     </nav>
 
                                     <div className="px-6 mt-8">
                                         <SheetClose asChild>
-                                            <Button className="w-full bg-[#1D1046] hover:bg-[#2d1a69] text-white rounded-lg py-3 px-4 text-base font-medium shadow-lg hover:shadow-xl transition-all flex items-center justify-center">
-                                                Obtenir un devis
-                                                <ChevronRight className="ml-2 h-4 w-4" />
-                                            </Button>
+                                            <Link href="/contact">
+                                                <Button className="w-full bg-[#1D1046] hover:bg-[#2d1a69] text-white rounded-lg py-3 px-4 text-base font-medium shadow-lg hover:shadow-xl transition-all flex items-center justify-center">
+                                                    Obtenir un devis
+                                                    <ChevronRight className="ml-2 h-4 w-4" />
+                                                </Button>
+                                            </Link>
                                         </SheetClose>
 
-                                        <div className="md:mt-8 flex justify-center space-x-4">
-                                            {/* Réseaux sociaux - optionnel */}
+                                        <div className="mt-8 flex justify-center space-x-4">
+                                            {/* Social links */}
                                             <a href="#" className="bg-gray-100 p-2 rounded-full hover:bg-[#1D1046]/10 hover:text-[#1D1046] transition-colors">
                                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                     <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
